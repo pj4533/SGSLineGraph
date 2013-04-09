@@ -15,6 +15,7 @@
 @property (nonatomic, strong) NSArray *points;
 @property (nonatomic, strong) UIColor *colour;
 @property (nonatomic, copy) NSString *title, *labelFormat;
+@property (nonatomic, strong) NSNumberFormatter* numberFormatter;
 
 @end
 

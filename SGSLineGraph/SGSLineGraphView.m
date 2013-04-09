@@ -204,54 +204,35 @@
                 int y2 = y + circle_diameter/2;
                 
 				if ([[self.components objectAtIndex:j] shouldLabelValues]) {
+                    CATextLayer *textLayer = [CATextLayer layer];
+                    textLayer.frame = CGRectMake(0,0, 50, 20);
+                    SGSLineGraphViewComponent* thisComponent = self.components[j];
+                    if (thisComponent.numberFormatter) {
+                        NSNumber* numberValue = [NSNumber numberWithFloat:value];
+                        textLayer.string = [thisComponent.numberFormatter stringFromNumber:numberValue];
+                    } else {
+                        textLayer.string = [NSString stringWithFormat:thisComponent.labelFormat, value];
+                    }
+                    textLayer.font = CGFontCreateWithFontName((__bridge CFStringRef)self.valueLabelFont.fontName);
+                    textLayer.fontSize = self.valueLabelFont.pointSize;
+                    textLayer.foregroundColor = [UIColor blackColor].CGColor;
+                    textLayer.backgroundColor = [UIColor clearColor].CGColor;
+                    textLayer.wrapped = NO;
+                    textLayer.contentsScale = [[UIScreen mainScreen] scale];
+                    [self.layer addSublayer:textLayer];
+                    y_level = y2 + 20;
+
 					if (y1 > y_level)
 					{
-                        
-                        CATextLayer *textLayer = [CATextLayer layer];
-                        textLayer.frame = CGRectMake(0,0, 50, 20);
-                        textLayer.string = [NSString stringWithFormat:[[self.components objectAtIndex:j] labelFormat], value];
-                        textLayer.fontSize = self.valueLabelFont.pointSize;
-                        textLayer.font = CGFontCreateWithFontName((__bridge CFStringRef)self.valueLabelFont.fontName);
-                        textLayer.foregroundColor = [UIColor blackColor].CGColor;
-                        textLayer.backgroundColor = [UIColor clearColor].CGColor;
                         textLayer.position = CGPointMake(x+15, y1);
-                        textLayer.wrapped = NO;
-                        textLayer.contentsScale = [[UIScreen mainScreen] scale];
-                        [self.layer addSublayer:textLayer];
-                        
-                        
-						y_level = y1 + 20;
 					}
 					else if (y2 < y_level+20 && y2 < self.frame.size.height-top_margin-bottom_margin)
 					{
-                        CATextLayer *textLayer = [CATextLayer layer];
-                        textLayer.frame = CGRectMake(0,0, 50, 20);
-                        textLayer.string = [NSString stringWithFormat:[[self.components objectAtIndex:j] labelFormat], value];
-                        textLayer.font = CGFontCreateWithFontName((__bridge CFStringRef)self.valueLabelFont.fontName);
-                        textLayer.fontSize = self.valueLabelFont.pointSize;
-                        textLayer.foregroundColor = [UIColor blackColor].CGColor;
-                        textLayer.backgroundColor = [UIColor clearColor].CGColor;
                         textLayer.position = CGPointMake(x+40, y2);
-                        textLayer.wrapped = NO;
-                        textLayer.contentsScale = [[UIScreen mainScreen] scale];
-                        [self.layer addSublayer:textLayer];
-						y_level = y2 + 20;
 					}
 					else
-					{
-                        CATextLayer *textLayer = [CATextLayer layer];
-                        textLayer.frame = CGRectMake(0,0, 50, 20);
-                        textLayer.string = [NSString stringWithFormat:[[self.components objectAtIndex:j] labelFormat], value];
-                        
-                        textLayer.fontSize = self.valueLabelFont.pointSize;
-                        textLayer.font = CGFontCreateWithFontName((__bridge CFStringRef)self.valueLabelFont.fontName);
-                        textLayer.foregroundColor = [UIColor blackColor].CGColor;
-                        textLayer.backgroundColor = [UIColor clearColor].CGColor;
+					{                        
                         textLayer.position = CGPointMake(x, y-10);
-                        textLayer.wrapped = NO;
-                        textLayer.contentsScale = [[UIScreen mainScreen] scale];
-                        [self.layer addSublayer:textLayer];
-						y_level = y1 + 20;
 					}
                 }
                 if (y+circle_diameter/2>y_level) y_level = y+circle_diameter/2;
