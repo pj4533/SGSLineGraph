@@ -310,7 +310,7 @@
             {
                 float value = [object floatValue];
 				
-                int x = 4+div_width*x_axis_index;
+                int x = 44+div_width*x_axis_index;
                 
                 // don't understand why i had to add this -14
                 int y = (top_margin-14) + (scale_max-value)/self.interval*div_height;
