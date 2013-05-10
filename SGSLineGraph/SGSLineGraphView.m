@@ -102,13 +102,21 @@
         float y_axis = scale_max - i*self.interval;
         
         int y = top_margin + div_height*i;
-        CGRect textFrame = CGRectMake(0,y-8,55,20);
         
         //        NSString *text = [NSString stringWithFormat:@"%.0f", y_axis];
         //        NSLog(@">>>>%@", text);
         
-        NSString *formatString = [NSString stringWithFormat:@"%%.%if", (power < 0) ? -power : 0];
+        NSString* formatString;
+        if (self.yAxisLabelFormat) {
+            formatString = self.yAxisLabelFormat;
+        } else {
+            formatString = [NSString stringWithFormat:@"%%.%if", (power < 0) ? -power : 0];
+        }
+
         NSString *text = [NSString stringWithFormat:formatString, y_axis];
+        
+        CGSize textSize = [text sizeWithFont:self.yLabelFont];
+        CGRect textFrame = CGRectMake(0,y-8,textSize.width,textSize.height);
         
         [text drawInRect:textFrame
 				withFont:self.yLabelFont

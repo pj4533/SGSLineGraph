@@ -14,6 +14,7 @@
 @property (nonatomic, assign) BOOL shouldLabelValues;
 @property (nonatomic, strong) NSArray *points;
 @property (nonatomic, strong) UIColor *colour;
+
 @property (nonatomic, copy) NSString *title, *labelFormat;
 @property (nonatomic, strong) NSNumberFormatter* numberFormatter;
 
@@ -32,6 +33,8 @@
 
 @property (nonatomic, strong) NSMutableArray *components, *xLabels;
 @property (nonatomic, strong) UIFont *yLabelFont, *xLabelFont, *valueLabelFont, *legendFont;
+
+@property (strong, nonatomic) NSString* yAxisLabelFormat;
 
 // Use these to autoscale the y axis to 'nice' values.
 // If used, minValue is ignored (0) and interval computed internally
