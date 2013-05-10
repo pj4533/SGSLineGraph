@@ -83,7 +83,7 @@
 	float x_label_height = 20;
 	
     if (self.autoscaleYAxis) {
-        scale_min = 0.0;
+        scale_min = 0;
         power = floor(log10(self.maxValue/5));
         float increment = self.maxValue / (5 * pow(10,power));
         increment = (increment <= 5) ? ceil(increment) : 10;
@@ -100,9 +100,9 @@
     for (int i=0; i<n_div; i++)
     {
         float y_axis = scale_max - i*self.interval;
-		
+        
         int y = top_margin + div_height*i;
-        CGRect textFrame = CGRectMake(0,y-8,25,20);
+        CGRect textFrame = CGRectMake(0,y-8,55,20);
         
         //        NSString *text = [NSString stringWithFormat:@"%.0f", y_axis];
         //        NSLog(@">>>>%@", text);
@@ -222,16 +222,16 @@
                     [self.layer addSublayer:textLayer];
                     y_level = y2 + 20;
 
-					if (y1 > y_level)
-					{
+                    
+                    // this is all gross code to make labels avoid graphs and being cut off the screen
+					if (y1 > y_level) {
                         textLayer.position = CGPointMake(x+15, y1);
-					}
-					else if (y2 < y_level+20 && y2 < self.frame.size.height-top_margin-bottom_margin)
-					{
-                        textLayer.position = CGPointMake(x+40, y2);
-					}
-					else
-					{                        
+					} else if (y2 < y_level+20 && y2 < self.frame.size.height-top_margin-bottom_margin) {
+                        if ((x+40+50) > self.frame.size.width)
+                            textLayer.position = CGPointMake(x+10, y2);
+                        else
+                            textLayer.position = CGPointMake(x+40, y2);
+					} else {
                         textLayer.position = CGPointMake(x, y-10);
 					}
                 }

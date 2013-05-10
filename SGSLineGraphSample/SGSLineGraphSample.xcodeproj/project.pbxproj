@@ -280,6 +280,7 @@
 				GCC_PREFIX_HEADER = "SGSLineGraphSample/SGSLineGraphSample-Prefix.pch";
 				INFOPLIST_FILE = "SGSLineGraphSample/SGSLineGraphSample-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -291,6 +292,7 @@
 				GCC_PREFIX_HEADER = "SGSLineGraphSample/SGSLineGraphSample-Prefix.pch";
 				INFOPLIST_FILE = "SGSLineGraphSample/SGSLineGraphSample-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -314,6 +316,7 @@
 				0A1D41C116762C36006A3AD4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
