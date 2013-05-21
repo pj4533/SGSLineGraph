@@ -31,14 +31,13 @@
 @property (nonatomic, assign) float minValue;
 @property (nonatomic, assign) float maxValue;
 
+@property CGFloat sideMargin;
+
 @property (nonatomic, strong) NSMutableArray *components, *xLabels;
 @property (nonatomic, strong) UIFont *yLabelFont, *xLabelFont, *valueLabelFont, *legendFont;
 
 @property (strong, nonatomic) NSString* yAxisLabelFormat;
 
-// Use these to autoscale the y axis to 'nice' values.
-// If used, minValue is ignored (0) and interval computed internally
-@property (nonatomic, assign) BOOL autoscaleYAxis;
 @property (nonatomic, assign) NSUInteger numYIntervals; // Use n*5 for best results
 @property (nonatomic, assign) NSUInteger numXIntervals;
 
