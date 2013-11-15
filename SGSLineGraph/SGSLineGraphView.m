@@ -33,6 +33,7 @@
         self.interval = 20;
 		self.maxValue = 100;
 		self.minValue = 0;
+        self.hackValueIDontKnowYouFigureItOutIHateThisArg = 0;
 		self.yLabelFont = [UIFont boldSystemFontOfSize:14];
 		self.xLabelFont = [UIFont boldSystemFontOfSize:12];
 		self.valueLabelFont = [UIFont boldSystemFontOfSize:10];
@@ -54,6 +55,7 @@
         self.interval = 20;
 		self.maxValue = 100;
 		self.minValue = 0;
+        self.hackValueIDontKnowYouFigureItOutIHateThisArg = 0;
 		self.yLabelFont = [UIFont boldSystemFontOfSize:14];
 		self.xLabelFont = [UIFont boldSystemFontOfSize:12];
 		self.valueLabelFont = [UIFont boldSystemFontOfSize:10];
@@ -233,8 +235,8 @@
 				
                 int x = margin+div_width*x_axis_index;
                 
-                // don't understand why i had to add this -14
-                int y = (top_margin-14) + (scale_max-value)/self.interval*div_height;
+                // don't understand why i had to do this, someone needs to write a GOOD charting pod or something.  this sucks.
+                int y = (top_margin+self.hackValueIDontKnowYouFigureItOutIHateThisArg) + (scale_max-value)/self.interval*div_height;
                 
                 CGRect circleRect = CGRectMake(x-circle_diameter/2, y-circle_diameter/2, circle_diameter,circle_diameter);
                 CGPoint circleCenter = CGPointMake(circleRect.origin.x + (circleRect.size.width / 2), circleRect.origin.y + (circleRect.size.height / 2));

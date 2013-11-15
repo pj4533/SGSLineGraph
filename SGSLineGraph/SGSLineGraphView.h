@@ -31,6 +31,7 @@
 @property (nonatomic, assign) float minValue;
 @property (nonatomic, assign) float maxValue;
 
+@property CGFloat hackValueIDontKnowYouFigureItOutIHateThisArg;
 @property CGFloat sideMargin;
 
 @property (nonatomic, strong) NSMutableArray *components, *xLabels;
