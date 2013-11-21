@@ -67,6 +67,57 @@
     return self;
 }
 
+- (NSString*) shortFormCurrencyWithNumber:(NSNumber*) number withFormatter:(NSNumberFormatter*) nformat {
+    
+    double doubleValue = [number doubleValue];
+    
+    if (doubleValue < 1000) {
+        NSString* stringValue = [NSString stringWithFormat: @"%@", [nformat stringFromNumber:number] ];
+        if ( [stringValue hasSuffix:@".00"] )
+            stringValue = [stringValue substringWithRange: NSMakeRange(0, [stringValue length]-3)];
+        return stringValue;
+    }
+    
+    NSString *stringValue = nil;
+    
+    [nformat setMaximumFractionDigits:0];
+    
+    NSArray *abbrevations = [NSArray arrayWithObjects:@"k", @"m", @"b", @"t", nil] ;
+    
+    for (NSString *s in abbrevations)
+    {
+        doubleValue /= 1000.0 ;
+        if ( doubleValue < 1000.0 )
+        {
+            if ( (long long)doubleValue % (long long) 100 == 0 ) {
+                [nformat setMaximumFractionDigits:0];
+            } else {
+                [nformat setMaximumFractionDigits:2];
+            }
+            
+            stringValue = [NSString stringWithFormat: @"%@", [nformat stringFromNumber: [NSNumber numberWithDouble: doubleValue]] ];
+            NSUInteger stringLen = [stringValue length];
+            
+            if ( [stringValue hasSuffix:@".00"] )
+            {
+                // Remove suffix
+                stringValue = [stringValue substringWithRange: NSMakeRange(0, stringLen-3)];
+            } else if ( [stringValue hasSuffix:@".0"] ) {
+                
+                // Remove suffix
+                stringValue = [stringValue substringWithRange: NSMakeRange(0, stringLen-2)];
+                
+            }
+            
+            // Add the letter suffix at the end of it
+            stringValue = [stringValue stringByAppendingString: s];
+            
+            break ;
+        }
+    }
+    
+    return stringValue;
+}
 
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
@@ -91,28 +142,28 @@
     div_height = (self.frame.size.height-top_margin-bottom_margin-x_label_height)/(n_div-1);
     
     // first loop thru and get the largest width of the y axis labels
-    CGFloat largestTextWidth = 0.0f;
-    for (int i=0; i<n_div; i++)
-    {
-        float y_axis = (self.interval*n_div) - i*self.interval;
-        NSString* formatString;
-        if (self.yAxisLabelFormat) {
-            formatString = self.yAxisLabelFormat;
-        } else {
-            formatString = @"%f";
-        }
-        
-        NSString *text = [NSString stringWithFormat:formatString, y_axis];
-        
-        CGSize textSize = [text sizeWithFont:self.yLabelFont];
-        if (largestTextWidth < textSize.width) {
-            largestTextWidth = textSize.width;
-        }
-    }
+//    CGFloat largestTextWidth = 0.0f;
+//    for (int i=0; i<n_div; i++)
+//    {
+//        float y_axis = (self.interval*n_div) - i*self.interval;
+//        NSString* formatString;
+//        if (self.yAxisLabelFormat) {
+//            formatString = self.yAxisLabelFormat;
+//        } else {
+//            formatString = @"%f";
+//        }
+//        
+//        NSString *text = [NSString stringWithFormat:formatString, y_axis];
+//        
+//        CGSize textSize = [text sizeWithFont:self.yLabelFont];
+//        if (largestTextWidth < textSize.width) {
+//            largestTextWidth = textSize.width;
+//        }
+//    }
     
-    if (self.sideMargin < largestTextWidth) {
-        self.sideMargin = largestTextWidth + 10.0f;
-    }
+//    if (self.sideMargin < largestTextWidth) {
+//        self.sideMargin = largestTextWidth + 10.0f;
+//    }
 
     // then loop thru and draw everything
     for (int i=0; i<n_div; i++)
@@ -121,14 +172,14 @@
         
         int y = top_margin + div_height*i;
         
-        NSString* formatString;
+        NSString *text;
         if (self.yAxisLabelFormat) {
-            formatString = self.yAxisLabelFormat;
+            text = [NSString stringWithFormat:self.yAxisLabelFormat, y_axis];
+        } else if (self.yAxisFormatter) {
+            text = [self shortFormCurrencyWithNumber:@(y_axis) withFormatter:self.yAxisFormatter];
         } else {
-            formatString = @"%f";
+            text = [NSString stringWithFormat:@"%f", y_axis];
         }
-
-        NSString *text = [NSString stringWithFormat:formatString, y_axis];
         
         CGSize textSize = [text sizeWithFont:self.yLabelFont];
         CGRect textFrame = CGRectMake(0,y-8,textSize.width,textSize.height);
@@ -144,11 +195,11 @@
         CGContextMoveToPoint(ctx, self.sideMargin, y);
         
         // this 40 is the estimated width of the xvalue label
-        CGContextAddLineToPoint(ctx, self.frame.size.width-self.sideMargin+40, y);
+        CGContextAddLineToPoint(ctx, self.frame.size.width, y);
         CGContextStrokePath(ctx);
     }
         
-    float margin = self.sideMargin;
+    float margin = self.sideMargin + 5;
     float div_width;
     if ([self.xLabels count] == 1)
     {
@@ -156,7 +207,7 @@
     }
     else
     {
-        div_width = (self.frame.size.width-2*margin)/([self.xLabels count]-1);
+        div_width = (self.frame.size.width-margin-30)/([self.xLabels count]-1);
     }
     
     for (NSUInteger i=0; i<[self.xLabels count]; i++)
@@ -191,7 +242,7 @@
     n_div = self.numYIntervals+1;
     div_height = (self.frame.size.height-top_margin-bottom_margin-x_label_height)/(n_div-1);
 
-    float margin = self.sideMargin;
+    float margin = self.sideMargin + 5;
     float div_width;
     if ([self.xLabels count] == 1)
     {
@@ -199,7 +250,7 @@
     }
     else
     {
-        div_width = (self.frame.size.width-2*margin)/([self.xLabels count]-1);
+        div_width = (self.frame.size.width-margin-30)/([self.xLabels count]-1);
     }
 
     float circle_diameter = 10;

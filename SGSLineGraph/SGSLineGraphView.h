@@ -38,6 +38,7 @@
 @property (nonatomic, strong) UIFont *yLabelFont, *xLabelFont, *valueLabelFont, *legendFont;
 
 @property (strong, nonatomic) NSString* yAxisLabelFormat;
+@property (strong, nonatomic) NSNumberFormatter* yAxisFormatter;
 
 @property (nonatomic, assign) NSUInteger numYIntervals; // Use n*5 for best results
 @property (nonatomic, assign) NSUInteger numXIntervals;
