@@ -181,14 +181,14 @@
             text = [NSString stringWithFormat:@"%f", y_axis];
         }
         
-        CGSize textSize = [text sizeWithFont:self.yLabelFont];
+        CGSize textSize = [text sizeWithAttributes:@{NSFontAttributeName:self.yLabelFont}];
         CGRect textFrame = CGRectMake(0,y-8,textSize.width,textSize.height);
-                
-        [text drawInRect:textFrame
-				withFont:self.yLabelFont
-		   lineBreakMode:NSLineBreakByWordWrapping
-			   alignment:NSTextAlignmentRight];
-		
+        
+        NSMutableParagraphStyle *textStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+        textStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        textStyle.alignment = NSTextAlignmentRight;
+        [text drawInRect:textFrame withAttributes:@{NSFontAttributeName:self.yLabelFont, NSParagraphStyleAttributeName:textStyle}];
+
 		// These are "grid" lines
         CGContextSetLineWidth(ctx, 1);
         CGContextSetRGBStrokeColor(ctx, 0.4f, 0.4f, 0.4f, 0.1f);
@@ -215,12 +215,12 @@
         if (i % self.numXIntervals == 1 || self.numXIntervals==1) {
             int x = (int) (margin + div_width * i);
             NSString *x_label = [NSString stringWithFormat:@"%@", [self.xLabels objectAtIndex:i]];
-            CGSize textSize = [x_label sizeWithFont:self.xLabelFont];
+            CGSize textSize = [x_label sizeWithAttributes:@{NSFontAttributeName:self.xLabelFont}];
             CGRect textFrame = CGRectMake(x, self.frame.size.height - x_label_height, textSize.width, x_label_height);
-            [x_label drawInRect:textFrame
-                       withFont:self.xLabelFont
-                  lineBreakMode:NSLineBreakByWordWrapping
-                      alignment:NSTextAlignmentCenter];
+            NSMutableParagraphStyle *textStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+            textStyle.lineBreakMode = NSLineBreakByWordWrapping;
+            textStyle.alignment = NSTextAlignmentCenter;
+            [x_label drawInRect:textFrame withAttributes:@{NSFontAttributeName:self.xLabelFont, NSParagraphStyleAttributeName:textStyle}];
         };
         
     }
