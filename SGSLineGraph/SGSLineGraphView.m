@@ -233,7 +233,7 @@
     unsigned long n_div;
     float scale_min, scale_max, div_height;
     float top_margin = 35;
-    float bottom_margin = 25;
+    float bottom_margin = 25 + self.frame.origin.y;
 	float x_label_height = 20;
 	
     scale_min = self.minValue;
@@ -242,7 +242,7 @@
     n_div = self.numYIntervals+1;
     div_height = (self.frame.size.height-top_margin-bottom_margin-x_label_height)/(n_div-1);
 
-    float margin = self.sideMargin + 5;
+    float margin = self.sideMargin + 20;
     float div_width;
     if ([self.xLabels count] == 1)
     {
@@ -250,7 +250,7 @@
     }
     else
     {
-        div_width = (self.frame.size.width-margin-30)/([self.xLabels count]-1);
+        div_width = (self.frame.size.width-margin-20)/([self.xLabels count]-1);
     }
 
     float circle_diameter = 10;
