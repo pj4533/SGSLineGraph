@@ -43,6 +43,10 @@
 @property (nonatomic, assign) NSUInteger numYIntervals; // Use n*5 for best results
 @property (nonatomic, assign) NSUInteger numXIntervals;
 
+@property (strong, nonatomic) NSMutableArray* graphedPoints;
+
+@property (strong, nonatomic) UIColor* popUpViewColor;
+
 - (void) setupGraphPaths;
 - (void) startDrawingAnimation;
 

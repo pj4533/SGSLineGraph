@@ -7,6 +7,14 @@
 //
 
 #import "SGSLineGraphView.h"
+#import "ASValuePopUpView.h"
+
+@interface SGSLineGraphView () {
+    ASValuePopUpView* _popUpView;
+}
+
+@end
+
 
 @implementation SGSLineGraphViewComponent
 
@@ -23,27 +31,6 @@
 @end
 
 @implementation SGSLineGraphView
-
-- (id) initWithCoder:(NSCoder *)aDecoder {
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        // Initialization code
-        
-        [self setBackgroundColor:[UIColor clearColor]];
-        self.interval = 20;
-		self.maxValue = 100;
-		self.minValue = 0;
-        self.hackValueIDontKnowYouFigureItOutIHateThisArg = 0;
-		self.yLabelFont = [UIFont boldSystemFontOfSize:14];
-		self.xLabelFont = [UIFont boldSystemFontOfSize:12];
-		self.valueLabelFont = [UIFont boldSystemFontOfSize:10];
-		self.legendFont = [UIFont boldSystemFontOfSize:10];
-        self.numYIntervals = 5;
-        self.numXIntervals = 1;
-        self.sideMargin = 45;
-    }
-    return self;
-}
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -63,6 +50,17 @@
         self.numYIntervals = 5;
         self.numXIntervals = 1;
         self.sideMargin = 45;
+        
+        UITapGestureRecognizer* singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleSingleTap:)];
+        singleTap.numberOfTapsRequired = 1;
+        singleTap.numberOfTouchesRequired = 1;
+        [self addGestureRecognizer:singleTap];
+
+        _popUpView = [[ASValuePopUpView alloc] initWithFrame:CGRectMake(0, 0, 1, 1)];
+        self.popUpViewColor = [UIColor colorWithHue:0.6 saturation:0.6 brightness:0.5 alpha:0.8];
+        _popUpView.alpha = 0.0;
+        [self addSubview:_popUpView];
+
     }
     return self;
 }
@@ -229,6 +227,7 @@
 
 - (void) setupGraphPaths {
     
+    self.graphedPoints = @[].mutableCopy;
     
     unsigned long n_div;
     float scale_min, scale_max, div_height;
@@ -292,6 +291,8 @@
                 CGRect circleRect = CGRectMake(x-circle_diameter/2, y-circle_diameter/2, circle_diameter,circle_diameter);
                 CGPoint circleCenter = CGPointMake(circleRect.origin.x + (circleRect.size.width / 2), circleRect.origin.y + (circleRect.size.height / 2));
 
+                [self.graphedPoints addObject:[NSValue valueWithCGPoint:circleCenter]];
+                
                 [pointsPath moveToPoint:CGPointMake(circleCenter.x+(circle_diameter/2), circleCenter.y)];
                 [pointsPath addArcWithCenter:circleCenter radius:circle_diameter/2 startAngle:0 endAngle:2*M_PI clockwise:YES];
 
@@ -341,6 +342,71 @@
     [_linesPathLayer addAnimation:pathAnimation forKey:@"animateStrokeEnd"];
     [CATransaction commit];
 }
+
+#pragma mark - taps
+
+-(void) handleSingleTap:(UITapGestureRecognizer *)gr {
+    [_popUpView hide];
+    
+    CGPoint tapPoint = [gr locationInView:self];
+    
+    NSInteger currentIndex = 0;
+    CGPoint tappedIndexPoint;
+    BOOL tappedIndex = NO;
+    for (NSValue* pointValue in self.graphedPoints) {
+        CGPoint point = pointValue.CGPointValue;
+        if (
+            (tapPoint.x > (point.x-22.0f)) &&
+            (tapPoint.x < (point.x+22.0f)) &&
+            (tapPoint.y > (point.y-22.0f)) &&
+            (tapPoint.y < (point.y+22.0f))
+            ) {
+            tappedIndexPoint = point;
+            tappedIndex = YES;
+            break;
+        } else {
+            currentIndex++;
+        }
+    }
+    if (tappedIndex) {
+        
+        CGRect thumbRect = CGRectMake(tappedIndexPoint.x, tappedIndexPoint.y - 10.0f, 1.0f, 1.0f);
+        CGFloat thumbW = thumbRect.size.width;
+        CGFloat thumbH = thumbRect.size.height;
+        
+        CGFloat width = 100.0f;
+        CGFloat height = 44.0f;
+        
+        CGRect popUpRect = CGRectInset(thumbRect, (thumbW - width)/2, (thumbH - height)/2);
+        popUpRect.origin.y = thumbRect.origin.y - height;
+        
+        // determine if popUpRect extends beyond the frame of the UISlider
+        // if so adjust frame and set the center offset of the PopUpView's arrow
+        CGFloat minOffsetX = CGRectGetMinX(popUpRect);
+        CGFloat maxOffsetX = CGRectGetMaxX(popUpRect) - self.bounds.size.width;
+        
+        CGFloat offset = minOffsetX < 0.0 ? minOffsetX : (maxOffsetX > 0.0 ? maxOffsetX : 0.0);
+        popUpRect.origin.x -= offset;
+        
+        [_popUpView setTextColor:[UIColor whiteColor]];
+        [_popUpView setFont:[UIFont boldSystemFontOfSize:22.0f]];
+        [_popUpView setCornerRadius:4.0f];
+        [_popUpView setColor:self.popUpViewColor];
+        [_popUpView setArrowCenterOffset:offset];
+        _popUpView.frame = CGRectIntegral(popUpRect);
+        
+        
+        SGSLineGraphViewComponent* firstComponent = self.components[0];
+        NSString* stringToPopUp = [self shortFormCurrencyWithNumber:firstComponent.points[currentIndex] withFormatter:self.yAxisFormatter];
+        [_popUpView setString:stringToPopUp];
+        [_popUpView setAnimationOffset:0];
+        
+        [_popUpView show];
+        
+        NSLog(@"Tapped index: %ld (%@)",(long) currentIndex, NSStringFromCGPoint(tapPoint));
+    }
+}
+
 
 
 @end
