@@ -164,7 +164,7 @@
 //    }
 
     // then loop thru and draw everything
-    for (int i=0; i<n_div; i++)
+    for (unsigned long i=0; i<n_div; i++)
     {
         float y_axis = scale_max - i*self.interval;
         
@@ -275,7 +275,7 @@
         int last_x = 0;
         int last_y = 0;
         BOOL firstPoint = YES;
-		for (int x_axis_index=0; x_axis_index<[component.points count]; x_axis_index++)
+		for (NSUInteger x_axis_index=0; x_axis_index<[component.points count]; x_axis_index++)
         {
             id object = [component.points objectAtIndex:x_axis_index];
 			
