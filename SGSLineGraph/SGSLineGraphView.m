@@ -333,9 +333,9 @@
     pathAnimation.fromValue = [NSNumber numberWithFloat:0.0f];
     pathAnimation.toValue = [NSNumber numberWithFloat:1.0f];
     [CATransaction setCompletionBlock:^{
-        _pointsPathLayer.strokeEnd = 1.0f;
-        _pointsPathLayer.fillColor = _pointsPathLayer.strokeColor;
-        _linesPathLayer.strokeEnd = 1.0f;
+        self->_pointsPathLayer.strokeEnd = 1.0f;
+        self->_pointsPathLayer.fillColor = self->_pointsPathLayer.strokeColor;
+        self->_linesPathLayer.strokeEnd = 1.0f;
     }];
     
     [_pointsPathLayer addAnimation:pathAnimation forKey:@"animateStrokeEnd"];
